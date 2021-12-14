@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float Speed = 5f;
-    public float TurnSpeed = 2f;
+    public float TurnSpeed = 5f;
     public float GroundDistance = 0.2f;
     /*    public float JumpHeight = 2f;
         public float GroundDistance = 0.2f;
@@ -18,7 +18,12 @@ public class PlayerController : MonoBehaviour
     private bool _isGrounded = true;
     private Transform _groundChecker;
 
-    
+    private bool once = false, turning;
+
+    private GameObject turnEnd = null;
+    private float turnDistance, turnAngle;
+    private Vector3 initialDirection;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,29 +34,46 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _isGrounded = Physics.CheckSphere(_groundChecker.position, GroundDistance, Ground, QueryTriggerInteraction.Ignore);
+        //    _isGrounded = Physics.CheckSphere(_groundChecker.position, GroundDistance, Ground, QueryTriggerInteraction.Ignore);
 
         _inputs = transform.forward;
-        
-      //  _inputs.z = Input.GetAxis("Vertical");
-     //   if (_inputs != Vector3.zero)
-      //      transform.forward = _inputs;
+
+        //  _inputs.z = Input.GetAxis("Vertical");
+        //   if (_inputs != Vector3.zero)
+        //      transform.forward = _inputs;
 
         if (Input.GetMouseButton(0))
         {
-            
-            _inputs+= transform.right*TurnSpeed * Input.GetAxis("Mouse X");
+
+            _inputs += transform.right * TurnSpeed * Input.GetAxis("Mouse X");
             /*            Touch touch = Input.GetTouch(0);
                         if (touch.phase == TouchPhase.Moved)
                         {*/
-         //   Debug.Log(Input.GetAxis("Mouse X"));
+            //   Debug.Log(Input.GetAxis("Mouse X"));
 
-          //  myCharacterController.Move(Vector3.right * (touch.deltaPosition.x * turnSpeed) * Time.deltaTime);   //moves the player left and right
+            //  myCharacterController.Move(Vector3.right * (touch.deltaPosition.x * turnSpeed) * Time.deltaTime);   //moves the player left and right
 
 
         }
         //  }
+/*        if (turning)
+        {
+            float curDistance = 1f;
+            RaycastHit hit;
 
+            if (Physics.Raycast(transform.position, initialDirection, out hit, Mathf.Infinity))
+            {
+                if (hit.collider.CompareTag("TurnEnd"))
+                {
+                    curDistance = Vector3.Distance(transform.position, hit.point);
+                }
+            }
+
+
+            float rotationProgress = (turnDistance - curDistance) / turnDistance;
+
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, turnAngle* rotationProgress, transform.rotation.eulerAngles.z));
+        }*/
     }
 
     private void FixedUpdate()
@@ -61,9 +83,40 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-      if(  other.name.Equals("Turn Right"))
+        if (other.name.Equals("TurnStart"))
         {
-            transform.Rotate(new Vector3(0, 90, 0));
+            if (!once)
+            {
+                if (other.transform.parent.GetChild(1).CompareTag("TurnEnd"))
+                {
+                    turnEnd = other.transform.parent.GetChild(1).gameObject;
+
+                    RaycastHit hit;
+                    initialDirection = transform.TransformDirection(-transform.right);
+                    if (Physics.Raycast(transform.position, transform.TransformDirection(-transform.right), out hit, Mathf.Infinity))
+                    {
+                        if (hit.collider.CompareTag("TurnEnd"))
+                        {
+                            turnDistance = Vector3.Distance(transform.position, hit.point);
+                          //  Debug.Log("turnDistance = Vector3.Distance(transform.position, hit.point);");
+                        }
+                    }
+
+                  //  Debug.Log("turnDistance=" + turnDistance);
+
+                   // Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                  
+                    //Physics.Raycast(transform.position, transform.TransformDirection(-transform.right), out hit, Mathf.Infinity)
+                    //  Vector3 a = turnEnd.transform.position - transform.position;
+                    turnAngle = Vector3.SignedAngle(transform.forward, -transform.right,transform.up);
+                   // Debug.Log("turnAngle=" + turnAngle);
+                    turning = true;
+                    // transform.forward = -transform.right;
+                    ///  transform.LookAt(turnEnd.transform);
+                    once = true;
+                }
+            }
+
         }
     }
 }
