@@ -23,10 +23,22 @@ public class PlayerController : MonoBehaviour
     private GameObject turnEnd = null;
     private float turnDistance, turnAngle;
     private Vector3 initialDirection;
+    private float knockedOutDuration=0.5f, invincibilityDuration=0.5f;
+
+    private bool isInvincible=false;    //ignores collision effects when invincible
+
+    private float defaultSpeed;
+
+    public Animator playerAnimator;
+
+    public CapsuleCollider standingCapsule, crawlingCapsule;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        defaultSpeed = Speed;
+
         _body = GetComponent<Rigidbody>();
         _groundChecker = transform.GetChild(0);
     }
@@ -76,13 +88,79 @@ public class PlayerController : MonoBehaviour
         }*/
     }
 
+
+
     private void FixedUpdate()
     {
         _body.MovePosition(_body.position + _inputs * Speed * Time.fixedDeltaTime);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Obstacle")&& !isInvincible)
+        {
+            //stop //play animation 
+            Speed = 0f;
+
+            //time delay
+            isInvincible = true;
+            playerAnimator.speed = 0f;
+            Invoke(nameof(getUpFromKnockDown), knockedOutDuration);
+            //continue //invincibility
+        }
+    }
+
+    private void getUpFromKnockDown()
+    {
+        //set invincibility flag
+        Speed = defaultSpeed;
+        playerAnimator.speed = 1f;
+
+        Invoke(nameof(disableInvincibility), invincibilityDuration);
+        
+        //invoke disable method
+    }
+
+    private void disableInvincibility()
+    {
+        isInvincible = false;
+    }
+
+    private void transitionToCrawl()
+    {
+        //play animation
+        crawlingCapsule.enabled = true;
+        standingCapsule.enabled = false;
+    }
+
+    private void transitionToRunning()
+    {
+        //play animation
+        standingCapsule.enabled = true;
+        crawlingCapsule.enabled = false;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
+
+        if (other.CompareTag("CrawlTriggerOff"))
+        {
+            Debug.Log("CrawlTriggerOff");
+            transitionToRunning();
+        }
+
+        if (other.CompareTag("CrawlTrigger"))
+        {
+            Debug.Log("CrawlTrigger");
+            transitionToCrawl();
+        }
+
+        if (other.CompareTag("JumpBox"))
+        {
+            playerAnimator.SetTrigger("Jump");
+        }
+
+
         if (other.name.Equals("TurnStart"))
         {
             if (!once)

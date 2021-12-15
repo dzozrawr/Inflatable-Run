@@ -8,6 +8,10 @@ TagManager:
   - LookAt
   - TurnStart
   - TurnEnd
+  - Obstacle
+  - JumpBox
+  - CrawlTrigger
+  - CrawlTriggerOff
   layers:
   - Default
   - TransparentFX
