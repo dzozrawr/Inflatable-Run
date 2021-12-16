@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask Ground;
 
 
-    private Rigidbody _body;
+    protected Rigidbody _body;
     private Vector3 _inputs = Vector3.zero;
     private bool _isGrounded = true;
     private Transform _groundChecker;
@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isInvincible=false;    //ignores collision effects when invincible
 
-    private float defaultSpeed;
+    protected float defaultSpeed;
 
     public Animator playerAnimator;
 
@@ -92,25 +92,33 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _body.MovePosition(_body.position + _inputs * Speed * Time.fixedDeltaTime);
+         _body.MovePosition(_body.position + _inputs * Speed * Time.fixedDeltaTime);
+      //  _body.AddForce(_inputs * Speed *100f* Time.fixedDeltaTime, ForceMode.Acceleration);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    protected void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag("Obstacle")&& !isInvincible)
         {
-            //stop //play animation 
-            Speed = 0f;
-
-            //time delay
-            isInvincible = true;
-            playerAnimator.speed = 0f;
-            Invoke(nameof(getUpFromKnockDown), knockedOutDuration);
-            //continue //invincibility
+            knockDown();
         }
     }
 
-    private void getUpFromKnockDown()
+    public void knockDown()
+    {
+        //stop //play animation 
+        Speed = 0f;
+
+        //time delay
+        isInvincible = true;
+        playerAnimator.speed = 0f;
+        Invoke(nameof(getUpFromKnockDown), knockedOutDuration);
+        //continue //invincibility
+    }
+
+    
+
+    protected void getUpFromKnockDown()
     {
         //set invincibility flag
         Speed = defaultSpeed;
@@ -121,27 +129,32 @@ public class PlayerController : MonoBehaviour
         //invoke disable method
     }
 
-    private void disableInvincibility()
+    protected void disableInvincibility()
     {
         isInvincible = false;
     }
 
-    private void transitionToCrawl()
+    protected void transitionToCrawl()
     {
         //play animation
         crawlingCapsule.enabled = true;
         standingCapsule.enabled = false;
     }
 
-    private void transitionToRunning()
+    protected void transitionToRunning()
     {
         //play animation
         standingCapsule.enabled = true;
         crawlingCapsule.enabled = false;
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected void OnTriggerEnter(Collider other)
     {
+
+        if (other.CompareTag("RotateTrigger"))
+        {        
+            transform.forward = other.transform.forward;
+        }
 
         if (other.CompareTag("CrawlTriggerOff"))
         {

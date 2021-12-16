@@ -12,6 +12,8 @@ TagManager:
   - JumpBox
   - CrawlTrigger
   - CrawlTriggerOff
+  - RotateTrigger
+  - WayPointTrigger
   layers:
   - Default
   - TransparentFX
