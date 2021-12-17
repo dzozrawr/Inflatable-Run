@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8a9d46b044311294b9a1e0fbda651aa7
+guid: c32f32bf46a987946b6e863b7e96a3fd
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable:
@@ -8,7 +8,7 @@ ModelImporter:
     second: mixamo.com
   externalObjects: {}
   materials:
-    materialImportMode: 1
+    materialImportMode: 2
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -97,7 +97,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

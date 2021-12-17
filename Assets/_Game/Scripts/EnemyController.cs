@@ -25,7 +25,7 @@ public class EnemyController : PlayerController
     //Attacking
 
     //States
-    public bool hasWeapon = false, wayPointsSet = false;
+    public bool wayPointsSet = false;
 
     private GameObject wayPoint;
     private Vector3 oldForward;
@@ -74,18 +74,32 @@ public class EnemyController : PlayerController
     {
         transform.LookAt(player);
 
-        if (Vector3.Distance(transform.position, player.transform.position) < 1f)
+/*        if (Vector3.Distance(transform.position, player.transform.position) < 1f)
         {
             player.GetComponent<PlayerController>().knockDown();
             transform.forward = oldForward;
             hasWeapon = false;
-        }
+        }*/
 
     }
 
     private void FixedUpdate()
     {
         _body.MovePosition(_body.position + _direction * Speed * Time.fixedDeltaTime);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        base.OnCollisionEnter(collision);
+
+        if (collision.collider.CompareTag("Player") && hasWeapon) //if im the player i can hit the enemy
+        {
+            //lookat player
+            PlayerController pc = collision.collider.gameObject.GetComponent<PlayerController>();
+            hitTheOtherGuy(pc);
+            transform.forward = oldForward;
+        }
+
     }
 
     private void OnTriggerEnter(Collider other)

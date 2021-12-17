@@ -23,15 +23,20 @@ public class PlayerController : MonoBehaviour
     private GameObject turnEnd = null;
     private float turnDistance, turnAngle;
     private Vector3 initialDirection;
-    private float knockedOutDuration=0.5f, invincibilityDuration=0.5f;
+    private float knockedOutDuration=0.5f, invincibilityDuration=4f;
 
-    private bool isInvincible=false;    //ignores collision effects when invincible
+    protected bool isInvincible=false;    //ignores collision effects when invincible
 
     protected float defaultSpeed;
 
     public Animator playerAnimator;
 
     public CapsuleCollider standingCapsule, crawlingCapsule;
+
+    protected bool hasWeapon = false;
+
+    public float explosionRadius = 0F;
+    public float explosionPower = 20.0F;
 
 
     // Start is called before the first frame update
@@ -102,28 +107,67 @@ public class PlayerController : MonoBehaviour
         {
             knockDown();
         }
+
+        if (transform.gameObject.CompareTag("Player")&&collision.collider.CompareTag("Enemy") && hasWeapon) //if im the player i can hit the enemy
+        {
+            //lookat player
+            PlayerController pc = collision.collider.gameObject.GetComponent<PlayerController>();
+            hitTheOtherGuy(pc);
+
+        }
     }
+
+    protected void hitTheOtherGuy(PlayerController pc)
+    {
+        playerAnimator.SetTrigger("Hit");
+        pc.knockDown();
+        hasWeapon = false;
+    }
+
+    public void explode()
+    {
+        Vector3 explosionPos = transform.position;
+        Collider[] colliders = Physics.OverlapSphere(explosionPos, explosionRadius);
+
+        foreach (Collider hit in colliders)
+        {
+            Rigidbody rb = hit.GetComponent<Rigidbody>();
+
+            if (rb != null && rb!=_body)
+            {
+                rb.AddExplosionForce(explosionPower, explosionPos, explosionRadius, 0.0F, ForceMode.Impulse);
+                hit.GetComponent<PlayerController>().knockDown();
+                
+            }
+               
+        }
+       
+    }
+
+
 
     public void knockDown()
     {
         //stop //play animation 
+        isInvincible = true;
         Speed = 0f;
+        playerAnimator.SetTrigger("KnockDown");
 
         //time delay
-        isInvincible = true;
-        playerAnimator.speed = 0f;
-        Invoke(nameof(getUpFromKnockDown), knockedOutDuration);
+        
+       // playerAnimator.speed = 0f;
+       // Invoke(nameof(getUpFromKnockDown), knockedOutDuration);
         //continue //invincibility
     }
 
     
 
-    protected void getUpFromKnockDown()
+    public void getUpFromKnockDown()
     {
         //set invincibility flag
-        Speed = defaultSpeed;
-        playerAnimator.speed = 1f;
 
+        //playerAnimator.speed = 1f;
+        Speed = defaultSpeed;
         Invoke(nameof(disableInvincibility), invincibilityDuration);
         
         //invoke disable method
@@ -136,18 +180,35 @@ public class PlayerController : MonoBehaviour
 
     protected void transitionToCrawl()
     {
-        //play animation
+       
+        playerAnimator.SetTrigger("Crawl"); //play animation
         crawlingCapsule.enabled = true;
         standingCapsule.enabled = false;
     }
 
     protected void transitionToRunning()
     {
-        //play animation
+        playerAnimator.SetTrigger("Run"); //play animation
         standingCapsule.enabled = true;
         crawlingCapsule.enabled = false;
     }
 
+    public void setSpeed(float s)
+    {
+        Speed = s;
+    }
+
+    public void setDefaultSpeed()
+    {
+        Speed = defaultSpeed;
+    }
+
+    public void giveBat()
+    {
+        hasWeapon = true;
+       // Debug.Log("hasWeapon = true;");
+        //enable the bat model
+    }
     protected void OnTriggerEnter(Collider other)
     {
 

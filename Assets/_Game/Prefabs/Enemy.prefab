@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f92aa621de2a2b4eba2c0622b9c78cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 5
-  TurnSpeed: 5
+  Speed: 7
+  TurnSpeed: 4
   GroundDistance: 0.2
   Ground:
     serializedVersion: 2
     m_Bits: 0
-  playerAnimator: {fileID: 1429548026}
+  playerAnimator: {fileID: 5462620523806774280}
   standingCapsule: {fileID: 4859208994023655497}
   crawlingCapsule: {fileID: 216564510437977461}
   agent: {fileID: 0}
@@ -29,7 +29,6 @@ MonoBehaviour:
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 0
-  hasWeapon: 0
   wayPointsSet: 0
 --- !u!95 &1429548026
 Animator:
@@ -41,7 +40,7 @@ Animator:
   m_GameObject: {fileID: 2342935543074521725}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 442e01023fc1cdd4a90eb18dbaba9ef5, type: 2}
+  m_Controller: {fileID: 9100000, guid: 426f9f31126d38f4a8cf40a933daeca1, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -69,6 +68,10 @@ PrefabInstance:
       propertyPath: playerAnimator
       value: 
       objectReference: {fileID: 1429548026}
+    - target: {fileID: 436155460393475632, guid: 9ede0b26fe30c2e4faa9029068834fdf, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f3cd2d2c1b9d42f46a306e338d34b61f, type: 2}
     - target: {fileID: 3524790696501233797, guid: 9ede0b26fe30c2e4faa9029068834fdf, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -76,6 +79,10 @@ PrefabInstance:
     - target: {fileID: 5021640467368083424, guid: 9ede0b26fe30c2e4faa9029068834fdf, type: 3}
       propertyPath: m_Constraints
       value: 112
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021640467368083424, guid: 9ede0b26fe30c2e4faa9029068834fdf, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5603056376369232429, guid: 9ede0b26fe30c2e4faa9029068834fdf, type: 3}
       propertyPath: m_IsActive
@@ -129,6 +136,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 5603056376476347098, guid: 9ede0b26fe30c2e4faa9029068834fdf, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1033807794, guid: 9ede0b26fe30c2e4faa9029068834fdf, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 9ede0b26fe30c2e4faa9029068834fdf, type: 3}
@@ -150,5 +161,10 @@ CapsuleCollider:
 --- !u!1 &2342935543074521725 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5711539358244124699, guid: 9ede0b26fe30c2e4faa9029068834fdf, type: 3}
+  m_PrefabInstance: {fileID: 8052631569788418662}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &5462620523806774280 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2598455845844381294, guid: 9ede0b26fe30c2e4faa9029068834fdf, type: 3}
   m_PrefabInstance: {fileID: 8052631569788418662}
   m_PrefabAsset: {fileID: 0}
